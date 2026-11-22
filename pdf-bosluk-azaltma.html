@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yazılı Toparlayıcı v1.5.0</title>
+<title>Yazılı Toparlayıcı v1.5.1</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -19,7 +19,9 @@ header{padding:18px 20px 0;max-width:1500px;margin:0 auto;display:flex;flex-wrap
 header h1{margin:0;font-size:23px;letter-spacing:-.01em}
 .ver{font-size:12px;font-weight:700;background:var(--accent);color:var(--accent-ink);border-radius:20px;padding:2px 9px}
 header p{flex-basis:100%;margin:2px 0 0;color:var(--muted);font-size:14px}
-main{max-width:1500px;margin:0 auto;padding:12px 20px 60px;display:grid;gap:14px}
+main{max-width:1500px;margin:0 auto;padding:12px 20px 60px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.card,details.card,.advin>div{min-width:0}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
 .drop{border:2px dashed var(--line);border-radius:var(--radius);padding:22px 16px;text-align:center;cursor:pointer;transition:.15s;background:var(--panel)}
 .drop.over,.drop:hover{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--panel))}
@@ -64,16 +66,16 @@ h2{margin:0 0 8px;font-size:15px}
 .tools{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin-bottom:10px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
 .tools label{font-size:12px;color:var(--muted)}
 .tools input[type=range]{width:120px}
-#selpanel{margin-bottom:12px;padding:10px;border:2px solid var(--accent);border-radius:8px;font-size:13px}
+#selpanel{position:sticky;bottom:8px;z-index:40;margin-top:12px;padding:8px 10px;background:var(--panel);border:2px solid var(--accent);border-radius:10px;font-size:13px;box-shadow:0 -4px 18px rgba(0,0,0,.35)}
 #selpanel .ttl{font-weight:700;margin-bottom:6px}
-.nud{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:6px 12px;margin-bottom:8px}
+.nud{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:4px 8px;margin-bottom:6px}
 .nud div{display:flex;align-items:center;gap:4px}
 .nud span{min-width:42px;color:var(--muted)}
 .scroll{overflow-x:auto;padding-bottom:4px}
 .pv{margin-bottom:22px}
 .pvh{display:flex;gap:10px;align-items:center;margin-bottom:6px;font-size:13px}
 .pvh .cnt{color:var(--muted);flex:1}
-.stage{position:relative;background:#fff;box-shadow:0 1px 8px rgba(0,0,0,.3);line-height:0;width:var(--stagew,620px);margin:0 auto}
+.stage{position:relative;background:#fff;box-shadow:0 1px 8px rgba(0,0,0,.3);line-height:0;width:calc(min(100%,760px)*var(--z,1));margin:0 auto}
 .stage canvas{width:100%;height:auto;display:block}
 .ov{position:absolute;inset:0;line-height:1.2;pointer-events:none}
 .ov.draw{pointer-events:auto;cursor:crosshair;touch-action:none;outline:3px solid var(--accent);outline-offset:-3px}
@@ -141,11 +143,16 @@ details.card>summary{cursor:pointer;font-weight:600}
 #brkall{margin:0 0 12px;font-size:13px}
 .brk button{margin-left:4px}
 .pbox.kn{box-shadow:0 3px 0 0 rgba(37,99,235,.85)}
+#selpanel .sm{padding:3px 8px;font-size:12px}
+#selpanel .row{gap:5px}
+#selpanel .ttl{font-size:13px}
+#selpanel .nud span{min-width:30px}
+#selpanel select{padding:3px 4px;font-size:12px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.0</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.1</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -297,10 +304,9 @@ details.card>summary{cursor:pointer;font-weight:600}
         <div class="tools">
           <button id="modeSel" type="button" class="on">☝ Seç / düzenle</button>
           <button id="modeDraw" type="button">✏ Yeni parça çiz</button>
-          <label>Yakınlaştır <input type="range" id="zoom" min="50" max="200" step="5" value="100"></label>
+          <label>Yakınlaştır <input type="range" id="zoom" min="50" max="300" step="5" value="100"></label>
           <span class="msg" id="modehint" style="margin:0"></span>
         </div>
-        <div id="selpanel" class="hidden"></div>
         <div class="legend">
           <span><i style="background:rgba(37,99,235,.35);border:1px solid #2563eb"></i>Parça (dokun → seç)</span>
           <span><i style="background:rgba(234,88,12,.4)"></i>Seçili (kenar tutamaçlarıyla ayarla)</span>
@@ -308,17 +314,22 @@ details.card>summary{cursor:pointer;font-weight:600}
           <span><i style="background:rgba(220,38,38,.5)"></i>Kaldırılacak</span>
         </div>
         <div class="scroll"><div id="orig"></div></div>
+        <div id="selpanel" class="hidden"></div>
       </div>
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.0)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.1)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.5.0 · 22.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.5.1 · 22.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.5.0',date:'22.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.5.1',date:'22.11.2026'};
 const CHANGELOG=[
+ {v:'1.5.1',d:'22.11.2026',items:[
+  'Telefonda "Gelişmiş" açılınca sayfanın küçülüp masaüstü gibi görünmesi düzeltildi (sayfa görünümü sabit genişlikteydi ve tüm sayfayı genişletiyordu; artık ekrana sığıyor). Yakınlaştırma çubuğu artık ekran genişliğine göre çalışıyor ve 300%\'e kadar çıkıyor.',
+  'Seçili parça paneli (Üst/Alt/Sol/Sağ ayarı, Böl, Birleştir, Kopyala…) artık sayfaların altında, ekranın altına yapışık duruyor; yukarı kaydırmana gerek yok. "▾ Küçült" ile sadece başlık satırına indirebilirsin.'
+ ]},
  {v:'1.5.0',d:'22.11.2026',items:[
   'Soru sayfa geçişinde bölünmesin: parça araç çubuğuna 🔗 "alttaki parçayla aynı sayfada tut" düğmesi eklendi. Birlikte tutulan parçalar sığmıyorsa tamamı yeni sayfaya geçer.',
   'Otomatik uyarı: sayfa geçişinde kaynakta arka arkaya olan iki parça ayrılmışsa (soru bölünmüş olabilir) önizlemede turuncu uyarı çıkar; tek dokunuşla "Birlikte tut" ya da en üstte "Hepsini birlikte tut".'
@@ -635,7 +646,7 @@ function buildViews(){
     views.push(v);
   }
 }
-function applyZoom(){ $('#orig').style.setProperty('--stagew',Math.round(620*val('zoom')/100)+'px'); }
+function applyZoom(){ $('#orig').style.setProperty('--z',val('zoom')/100); }
 
 function posPartEl(part){
   const r=partEls[part.id]; if(!r) return;
@@ -770,6 +781,7 @@ function nudge(part,edge,d){
   });
   if(hit) setMsg(LIMMSG,'warn');
 }
+let selCollapsed=false;
 function paintSel(){
   const box=$('#selpanel'); const part=partById(selId);
   if(!part){ box.classList.add('hidden'); return; }
@@ -777,7 +789,13 @@ function paintSel(){
   const idx=parts.indexOf(part)+1;
   const ttl=document.createElement('div'); ttl.className='ttl';
   ttl.textContent='Seçili: parça '+idx+' — sayfa '+(part.page+1)+' · '+Math.round(part.right-part.left)+' × '+Math.round(part.bottom-part.top)+' pt'+(part.off?' (kaldırılacak)':'');
-  box.appendChild(ttl);
+  ttl.style.margin='0';
+  const hdr=document.createElement('div'); hdr.className='row'; hdr.style.cssText='justify-content:space-between;flex-wrap:nowrap;margin-bottom:'+(selCollapsed?'0':'6px');
+  hdr.appendChild(ttl);
+  const tg=document.createElement('button'); tg.type='button'; tg.className='sm'; tg.textContent=selCollapsed?'▴ Aç':'▾ Küçült';
+  tg.onclick=()=>{selCollapsed=!selCollapsed;paintSel();}; hdr.appendChild(tg);
+  box.appendChild(hdr);
+  if(selCollapsed) return;
   const nud=document.createElement('div'); nud.className='nud';
   const stepSel=document.createElement('select'); stepSel.style.width='auto';
   [1,2,5,10].forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n+' pt';if(n===(window._step||2))o.selected=true;stepSel.appendChild(o);});
