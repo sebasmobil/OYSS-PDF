@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yazılı Toparlayıcı v1.5.1</title>
+<title>Yazılı Toparlayıcı v1.5.2</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -46,7 +46,8 @@ button.sm{padding:3px 9px;font-size:13px}
 #bar .stats .big{font-size:16px}
 #bar button{padding:6px 12px}
 #bar .primary{padding:7px 16px}
-@media(max-width:560px){#bar .lbl{display:none}#bar .stats .x{display:none}}
+@media(max-width:560px){#bar .stats .x{display:none}}
+@media(max-width:350px){#bar .lbl{display:none}}
 @media(max-height:520px){main{gap:8px;padding-top:6px}header{padding-top:6px}header p{display:none}#bar{padding:3px 8px}#bar button{padding:4px 9px;font-size:13px}#bar .primary{padding:5px 12px}#bar .stats,#bar .stats .big{font-size:13px}}
 .stats{display:flex;flex-wrap:wrap;gap:4px 20px;font-size:14px;align-items:baseline}
 .stats b{font-variant-numeric:tabular-nums}
@@ -85,7 +86,7 @@ h2{margin:0 0 8px;font-size:15px}
 .bo i{position:absolute;left:-2px;top:-2px;background:#2563eb;color:#fff;font:700 11px/1 system-ui;padding:3px 6px;border-radius:3px 0 4px 0;font-style:normal;pointer-events:none}
 .bo.off{border-color:#dc2626;background:rgba(220,38,38,.38)}
 .bo.off i{background:#dc2626}
-.bo.off::after{content:"✕ kaldırılacak";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 13px system-ui;text-shadow:0 1px 3px rgba(0,0,0,.8);pointer-events:none}
+.bo.off::after{content:"✕ Çıkarıldı · PDF'e girmez";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font:700 13px system-ui;text-shadow:0 1px 3px rgba(0,0,0,.8);pointer-events:none}
 .bo.sel{border-color:#ea580c;border-width:3px;background:rgba(234,88,12,.10)}
 .bo.sel i{background:#ea580c}
 .hd{position:absolute;background:#ea580c;border:2px solid #fff;border-radius:7px;touch-action:none;z-index:5}
@@ -148,11 +149,13 @@ details.card>summary{cursor:pointer;font-weight:600}
 #selpanel .ttl{font-size:13px}
 #selpanel .nud span{min-width:30px}
 #selpanel select{padding:3px 4px;font-size:12px}
+#toast{display:none;position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:80;background:#1f2328;color:#fff;border-radius:10px;padding:8px 10px;gap:10px;align-items:center;box-shadow:0 4px 16px rgba(0,0,0,.5);font-size:14px;max-width:94vw;white-space:nowrap}
+#toast button{background:#fff;color:#111;border:0;padding:7px 11px;border-radius:7px;font-weight:700;font-size:14px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.1</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.2</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -311,7 +314,7 @@ details.card>summary{cursor:pointer;font-weight:600}
           <span><i style="background:rgba(37,99,235,.35);border:1px solid #2563eb"></i>Parça (dokun → seç)</span>
           <span><i style="background:rgba(234,88,12,.4)"></i>Seçili (kenar tutamaçlarıyla ayarla)</span>
           <span><i style="background:rgba(234,88,12,.25)"></i>Küçülecek boşluk</span>
-          <span><i style="background:rgba(220,38,38,.5)"></i>Kaldırılacak</span>
+          <span><i style="background:rgba(220,38,38,.5)"></i>Çıkarıldı (PDF'e girmez; "Geri getir" ile döner)</span>
         </div>
         <div class="scroll"><div id="orig"></div></div>
         <div id="selpanel" class="hidden"></div>
@@ -319,13 +322,17 @@ details.card>summary{cursor:pointer;font-weight:600}
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.1)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.2)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.5.1 · 22.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.5.2 · 22.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.5.1',date:'22.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.5.2',date:'22.11.2026'};
 const CHANGELOG=[
+ {v:'1.5.2',d:'22.11.2026',items:[
+  '"Kaldırılacak" yazısı yanıltıcıydı: kaldırılan parça zaten PDF\'e girmiyor, sadece orijinal sayfada işaretli kalıyor. Artık "Çıkarıldı · PDF\'e girmez" yazıyor.',
+  'Kaldır, böl, birleştir, kopyala işlemlerinden sonra ekranın üstünde "↶ Geri al" bildirimi çıkıyor (8 sn). Üstteki Geri al düğmesi telefonda da yazılı görünüyor. Geri al birleştirmeyi de geri alır.'
+ ]},
  {v:'1.5.1',d:'22.11.2026',items:[
   'Telefonda "Gelişmiş" açılınca sayfanın küçülüp masaüstü gibi görünmesi düzeltildi (sayfa görünümü sabit genişlikteydi ve tüm sayfayı genişletiyordu; artık ekrana sığıyor). Yakınlaştırma çubuğu artık ekran genişliğine göre çalışıyor ve 300%\'e kadar çıkıyor.',
   'Seçili parça paneli (Üst/Alt/Sol/Sağ ayarı, Böl, Birleştir, Kopyala…) artık sayfaların altında, ekranın altına yapışık duruyor; yukarı kaydırmana gerek yok. "▾ Küçült" ile sadece başlık satırına indirebilirsin.'
@@ -437,13 +444,21 @@ function pushUndo(){
   $('#undo').disabled=false;
 }
 function undo(){
+  { const t=document.getElementById('toast'); if(t) t.style.display='none'; }
   const s=undoStack.pop(); if(!s) return;
   const o=JSON.parse(s); parts=o.parts; nextId=o.nextId; manualDirty=o.manualDirty;
   if(!partById(selId)) selId=null;
   $('#undo').disabled=!undoStack.length;
   update();
 }
-function edit(fn){ pushUndo(); fn(); manualDirty=true; update(); }
+function edit(fn,label){ pushUndo(); fn(); manualDirty=true; update(); const l=typeof label==='function'?label():label; if(l) showToast(l); }
+let toastT=null;
+function showToast(msg){
+  let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; document.body.appendChild(t); }
+  t.innerHTML=''; t.append(msg+' ');
+  const b=document.createElement('button'); b.type='button'; b.textContent='↶ Geri al'; b.onclick=()=>{ undo(); t.style.display='none'; };
+  t.appendChild(b); t.style.display='flex'; clearTimeout(toastT); toastT=setTimeout(()=>{t.style.display='none';},8000);
+}
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&selId!=null&&!/INPUT|SELECT|TEXTAREA/.test((document.activeElement||{}).tagName||'')){ selId=null; update(); return; }
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!/INPUT|SELECT|TEXTAREA/.test((document.activeElement||{}).tagName||'')){ e.preventDefault(); undo(); }
@@ -697,7 +712,7 @@ function paintOverlays(){
       v.ov.appendChild(el);
     });
     const bl=parts.filter(b=>b.page===pi); const off=bl.filter(b=>b.off).length;
-    v.cnt.textContent=bl.length+' parça'+(off?' · '+off+' kaldırılacak':'');
+    v.cnt.textContent=bl.length+' parça'+(off?' · '+off+' çıkarıldı':'');
     v.btn.textContent=bl.length&&off===bl.length?'Sayfayı geri getir':'Sayfayı kaldır';
   });
 }
@@ -788,7 +803,7 @@ function paintSel(){
   box.classList.remove('hidden'); box.innerHTML='';
   const idx=parts.indexOf(part)+1;
   const ttl=document.createElement('div'); ttl.className='ttl';
-  ttl.textContent='Seçili: parça '+idx+' — sayfa '+(part.page+1)+' · '+Math.round(part.right-part.left)+' × '+Math.round(part.bottom-part.top)+' pt'+(part.off?' (kaldırılacak)':'');
+  ttl.textContent='Seçili: parça '+idx+' — sayfa '+(part.page+1)+' · '+Math.round(part.right-part.left)+' × '+Math.round(part.bottom-part.top)+' pt'+(part.off?' (çıkarıldı, PDF\'e girmez)':'');
   ttl.style.margin='0';
   const hdr=document.createElement('div'); hdr.className='row'; hdr.style.cssText='justify-content:space-between;flex-wrap:nowrap;margin-bottom:'+(selCollapsed?'0':'6px');
   hdr.appendChild(ttl);
@@ -813,17 +828,17 @@ function paintSel(){
   box.appendChild(nud);
   const row=document.createElement('div'); row.className='row';
   const btn=(t,fn,cls)=>{const b=document.createElement('button');b.type='button';b.className='sm '+(cls||'');b.textContent=t;b.onclick=fn;row.appendChild(b);return b;};
-  btn(part.off?'Geri getir':'✕ Kaldır',()=>edit(()=>{part.off=!part.off;}));
+  btn(part.off?'Geri getir':'✕ Kaldır',()=>edit(()=>{part.off=!part.off;},()=>part.off?'Parça çıkarıldı.':'Parça geri getirildi.'));
   btn('Ortadan böl',()=>edit(()=>{
     const mid=(part.top+part.bottom)/2; const np=Object.assign({},part,{id:nextId++,top:mid});
     part.bottom=mid; parts.splice(parts.indexOf(part)+1,0,np); selId=part.id;
-  }));
+  },'Parça ikiye bölündü.'));
   btn('Alttakiyle birleştir',()=>{
     const below=parts.filter(q=>q!==part&&q.page===part.page&&q.top>=part.top).sort((a,b)=>a.top-b.top)[0];
     if(!below){ setMsg('Bu sayfada altta birleştirilecek parça yok.','warn'); return; }
-    edit(()=>{ part.top=Math.min(part.top,below.top); part.bottom=Math.max(part.bottom,below.bottom); part.left=Math.min(part.left,below.left); part.right=Math.max(part.right,below.right); parts.splice(parts.indexOf(below),1); });
+    edit(()=>{ part.top=Math.min(part.top,below.top); part.bottom=Math.max(part.bottom,below.bottom); part.left=Math.min(part.left,below.left); part.right=Math.max(part.right,below.right); parts.splice(parts.indexOf(below),1); },'İki parça birleştirildi.');
   });
-  btn('Kopyala',()=>edit(()=>{ const np=Object.assign({},part,{id:nextId++}); parts.splice(parts.indexOf(part)+1,0,np); selId=np.id; }));
+  btn('Kopyala',()=>edit(()=>{ const np=Object.assign({},part,{id:nextId++}); parts.splice(parts.indexOf(part)+1,0,np); selId=np.id; },'Parça kopyalandı.'));
   btn('Seçimi bırak',()=>{selId=null;update();});
   box.appendChild(row);
 }
@@ -866,7 +881,7 @@ function buildToolbar(it){
   const order=parts.filter(q=>!q.off); const oi=order.indexOf(b);
   const r1=document.createElement('div'); r1.className='r1'; r1.style.flexWrap='wrap';
   const btn=(t,fn,dis,title)=>{const x=document.createElement('button');x.type='button';x.textContent=t;x.disabled=!!dis;if(title)x.title=title;x.onclick=fn;r1.appendChild(x);return x;};
-  btn('✕ Kaldır',()=>{selId=null;edit(()=>{b.off=true;});},false,'Kaldır (rafa gider, geri getirilebilir)');
+  btn('✕ Kaldır',()=>{selId=null;edit(()=>{b.off=true;},'Parça çıkarıldı (rafta duruyor).');},false,'Kaldır (rafa gider, geri getirilebilir)');
   btn('↑',()=>{const o=order[oi-1];edit(()=>{const ia=parts.indexOf(b),ib=parts.indexOf(o);[parts[ia],parts[ib]]=[parts[ib],parts[ia]];});},oi<=0,'Yukarı taşı');
   btn('↓',()=>{const o=order[oi+1];edit(()=>{const ia=parts.indexOf(b),ib=parts.indexOf(o);[parts[ia],parts[ib]]=[parts[ib],parts[ia]];});},oi<0||oi>=order.length-1,'Aşağı taşı');
   btn('−',()=>edit(()=>{b.scale=clamp(Math.round(b.scale-5),20,300);}),false,'Küçült');
