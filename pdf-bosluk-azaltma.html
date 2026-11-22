@@ -3,7 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Yazılı Toparlayıcı v1.5.2</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImciIHgxPSIwIiB5MT0iMCIgeDI9IjAiIHkyPSIxIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiNlYTZhMmEiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiNiOTNhMDkiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExNSIgZmlsbD0idXJsKCNnKSIvPgogIDxyZWN0IHg9IjE0NCIgeT0iMTA2IiB3aWR0aD0iMjI0IiBoZWlnaHQ9IjMwMCIgcng9IjI2IiBmaWxsPSIjZmZmIi8+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjYzI0MTBjIiBzdHJva2Utd2lkdGg9IjEzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPgogICAgPHBvbHlsaW5lIHBvaW50cz0iMjMwLDEzOCAyNTYsMTYwIDI4MiwxMzgiLz4KICAgIDxwb2x5bGluZSBwb2ludHM9IjIzMCwzNzQgMjU2LDM1MiAyODIsMzc0Ii8+CiAgPC9nPgogIDxnIGZpbGw9IiNjMjQxMGMiPgogICAgPHJlY3QgeD0iMTc2IiB5PSIxODQiIHdpZHRoPSIxNjAiIGhlaWdodD0iMTUiIHJ4PSI3LjUiLz48cmVjdCB4PSIxNzYiIHk9IjIwNyIgd2lkdGg9IjExMiIgaGVpZ2h0PSIxMSIgcng9IjUuNSIgb3BhY2l0eT0iLjUiLz4KICAgIDxyZWN0IHg9IjE3NiIgeT0iMjM4IiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjE1IiByeD0iNy41Ii8+PHJlY3QgeD0iMTc2IiB5PSIyNjEiIHdpZHRoPSIxMjgiIGhlaWdodD0iMTEiIHJ4PSI1LjUiIG9wYWNpdHk9Ii41Ii8+CiAgICA8cmVjdCB4PSIxNzYiIHk9IjI5MiIgd2lkdGg9IjE2MCIgaGVpZ2h0PSIxNSIgcng9IjcuNSIvPjxyZWN0IHg9IjE3NiIgeT0iMzE1IiB3aWR0aD0iOTYiIGhlaWdodD0iMTEiIHJ4PSI1LjUiIG9wYWNpdHk9Ii41Ii8+CiAgPC9nPgo8L3N2Zz4K">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
+<meta name="theme-color" content="#c2410c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Toparlayıcı">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Yazılı Toparlayıcı v1.5.5</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -155,7 +162,7 @@ details.card>summary{cursor:pointer;font-weight:600}
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.2</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.5</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -322,13 +329,22 @@ details.card>summary{cursor:pointer;font-weight:600}
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.2)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.5)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.5.2 · 22.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.5.5 · 22.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.5.2',date:'22.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.5.5',date:'22.11.2026'};
 const CHANGELOG=[
+ {v:'1.5.5',d:'22.11.2026',items:[
+  'İkon köşeleri yuvarlatıldı (sekme simgesi ve Android). iPhone ana ekran ikonu kare kalır, iPhone köşeleri kendisi yuvarlar (şeffaf köşe siyah görünürdü).'
+ ]},
+ {v:'1.5.4',d:'22.11.2026',items:[
+  'İkon uygulamanın içine gömüldü: ayrı ikon ve manifest dosyaları artık gerekmiyor (sadece bu dosya ve index.html).'
+ ]},
+ {v:'1.5.3',d:'22.11.2026',items:[
+  'Uygulama ikonu eklendi (turuncu zeminde sıkışan soru blokları). Ana ekrana eklenince kendi ikonu ve "Toparlayıcı" adıyla, tam ekran uygulama gibi açılır. Sabit giriş sayfası (index.html) her zaman en son sürüme yönlendirir.'
+ ]},
  {v:'1.5.2',d:'22.11.2026',items:[
   '"Kaldırılacak" yazısı yanıltıcıydı: kaldırılan parça zaten PDF\'e girmiyor, sadece orijinal sayfada işaretli kalıyor. Artık "Çıkarıldı · PDF\'e girmez" yazıyor.',
   'Kaldır, böl, birleştir, kopyala işlemlerinden sonra ekranın üstünde "↶ Geri al" bildirimi çıkıyor (8 sn). Üstteki Geri al düğmesi telefonda da yazılı görünüyor. Geri al birleştirmeyi de geri alır.'
@@ -1167,6 +1183,17 @@ function showCrashNote(busy){
 }
 init();
 window.__app={get parts(){return parts},get pages(){return pages},layout,buildPdf,loadFile,libsReady,APP,undo,edit,setMode,get selId(){return selId},set selId(v){selId=v}};
+</script>
+<script>
+(function(){try{
+  var png=document.querySelector('link[rel=apple-touch-icon]').href, svg=document.querySelector('link[rel=icon]').href;
+  var base=new URL('./',location.href).href;
+  var m={name:'Yazılı Toparlayıcı',short_name:'Toparlayıcı',lang:'tr',start_url:base,scope:base,display:'standalone',background_color:'#f6f5f1',theme_color:'#c2410c',
+    icons:[{src:svg,sizes:'any',type:'image/svg+xml'},{src:png,sizes:'180x180',type:'image/png'}]};
+  var l=document.createElement('link'); l.rel='manifest';
+  l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));
+  document.head.appendChild(l);
+}catch(e){}})();
 </script>
 </body>
 </html>
