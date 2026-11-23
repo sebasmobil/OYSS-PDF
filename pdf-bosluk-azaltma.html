@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Toparlayıcı">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Yazılı Toparlayıcı v1.5.5</title>
+<title>Yazılı Toparlayıcı v1.5.6</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -162,7 +162,7 @@ details.card>summary{cursor:pointer;font-weight:600}
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.5</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.6</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -329,13 +329,16 @@ details.card>summary{cursor:pointer;font-weight:600}
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.5)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.6)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.5.5 · 22.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.5.6 · 23.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.5.5',date:'22.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.5.6',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'1.5.6',d:'23.11.2026',items:[
+  'Düzeltme: ana ekrandan açılınca 404 veriyordu (kısayol sitenin ana klasörünü açmaya çalışıyordu). Artık kısayol doğrudan bu sayfayı açar; index.html gerekmez.'
+ ]},
  {v:'1.5.5',d:'22.11.2026',items:[
   'İkon köşeleri yuvarlatıldı (sekme simgesi ve Android). iPhone ana ekran ikonu kare kalır, iPhone köşeleri kendisi yuvarlar (şeffaf köşe siyah görünürdü).'
  ]},
@@ -1187,8 +1190,8 @@ window.__app={get parts(){return parts},get pages(){return pages},layout,buildPd
 <script>
 (function(){try{
   var png=document.querySelector('link[rel=apple-touch-icon]').href, svg=document.querySelector('link[rel=icon]').href;
-  var base=new URL('./',location.href).href;
-  var m={name:'Yazılı Toparlayıcı',short_name:'Toparlayıcı',lang:'tr',start_url:base,scope:base,display:'standalone',background_color:'#f6f5f1',theme_color:'#c2410c',
+  var base=new URL('./',location.href).href, here=location.href.split('#')[0];
+  var m={name:'Yazılı Toparlayıcı',short_name:'Toparlayıcı',lang:'tr',start_url:here,scope:base,display:'standalone',background_color:'#f6f5f1',theme_color:'#c2410c',
     icons:[{src:svg,sizes:'any',type:'image/svg+xml'},{src:png,sizes:'180x180',type:'image/png'}]};
   var l=document.createElement('link'); l.rel='manifest';
   l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));
