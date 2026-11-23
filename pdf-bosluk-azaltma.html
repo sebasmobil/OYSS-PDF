@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Toparlayıcı">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Yazılı Toparlayıcı v1.5.9</title>
+<title>Yazılı Toparlayıcı v1.6.0</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -197,7 +197,7 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.9</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.6.0</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -293,8 +293,8 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
       <div class="ctl">
         <label>Çıktı türü</label>
         <select id="mode">
-          <option value="vector">Vektör — kayıpsız, her boyutta keskin (önerilen)</option>
-          <option value="raster">Görüntü — yüksek çözünürlüklü resim</option>
+          <option value="vector">Vektör — kayıpsız, her boyutta keskin</option>
+          <option value="raster" selected>Görüntü — yüksek çözünürlüklü resim (önerilen)</option>
         </select>
         <small>Vektörde yazılar ve çizgiler dosyada olduğu gibi kalır, yakınlaştırınca/yazdırınca bozulmaz. Kaldırdığın parçaların metni görünmez ama dosyada gizli kalır. Tamamen silinsin istersen "Görüntü".</small>
       </div>
@@ -311,8 +311,8 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
       <div class="ctl">
         <label>Görüntü biçimi</label>
         <select id="fmt">
-          <option value="png" selected>PNG — kayıpsız (önerilen)</option>
-          <option value="jpeg">JPEG %95 — daha küçük dosya</option>
+          <option value="png">PNG — kayıpsız (büyük dosya)</option>
+          <option value="jpeg" selected>JPEG %95 — daha küçük dosya (önerilen)</option>
         </select>
         <small>Ekrandaki önizleme sadece düzenleme içindir; indirilen PDF her zaman yeniden, tam kalitede üretilir.</small>
       </div>
@@ -367,13 +367,14 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.9)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.6.0)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.5.9 · 23.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.6.0 · 23.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.5.9',date:'23.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.6.0',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'1.6.0',d:'23.11.2026',items:['Varsayılan çıktı ayarları: Görüntü, 300 dpi, JPEG %95 (küçük dosya).']},
  {v:'1.5.9',d:'23.11.2026',items:['Hedef sayfa sayısı varsayılanı 2 oldu.']},
  {v:'1.5.8',d:'23.11.2026',items:[
   'Görünüm: bölümler artık belirgin. Her kartın üstünde renkli şerit, kart başlıkları büyük ve katlanır başlıklarda renkli ok düğmesi var. Ayar grupları (Yerleşim, Alt bilgi, Çıktı kalitesi, Otomatik tespit) renkli bant başlıkla ayrılıyor ve her ayar kendi kutusunda duruyor. Gelişmiş bölümünde "Parça sınırlarını düzenle" ve "Orijinal sayfalar" alt başlıkları eklendi.'
