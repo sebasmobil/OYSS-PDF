@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PDF Düzenleyici">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>PDF Düzenleyici v1.8</title>
+<title>PDF Düzenleyici v2.0</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -223,11 +223,28 @@ button.tgl{background:var(--accent)!important;color:var(--accent-ink)!important;
 .ptb .r1>:nth-child(1),.ptb .r1>:nth-child(8),.ptb .r1>:nth-child(9){grid-column:span 2}
 .ptb .r1>.no{text-align:center;align-self:center}
 .ptb .r1 button.tgl{min-width:0;min-height:46px}
+textarea#ftText{width:100%;box-sizing:border-box;resize:vertical;min-height:64px;padding:8px 10px;border:1.5px solid var(--cardline);border-radius:8px;background:var(--box);color:var(--ink);font-family:inherit;line-height:1.35}
+/* ===== v1.9: düğmeler tekrar kompakt, sadece aç/kapa simgesi büyük ===== */
+.ptb,#ptdock .ptb{padding:5px;border-radius:12px}
+.ptb .r1{display:flex;flex-wrap:wrap;gap:4px}
+.ptb .r1>*{grid-column:auto!important}
+.ptb button,#ptdock .ptb button,#selpanel button{min-height:32px;padding:3px 9px;font-size:14px;font-weight:600;border-radius:9px}
+.ptb .r1 button{flex:0 1 auto}
+.ptb .no{font-size:13px;padding:0 4px}
+.ptb .more,#ptdock .ptb .more{margin-top:5px;padding:7px 2px 1px;gap:6px 10px;font-size:13px}
+.ptb .more input[type=number]{width:68px;padding:4px 6px}
+.ptb .more button{min-height:32px;font-size:13px}
+button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font-size:32px!important;line-height:1!important;min-width:48px!important;min-height:32px!important;padding:0 10px!important}
+#selpanel{padding:8px 10px}
+#selpanel .ttl{font-size:13px}
+#selpanel .sm,#selpanel .row button{padding:3px 8px;font-size:13px;min-height:32px}
+#selpanel .nud button{min-width:36px;min-height:32px}
+#selpanel select{font-size:16px;min-height:34px}
 </style>
 </head>
 <body>
 <header>
-  <h1>PDF Düzenleyici</h1><span class="ver">v1.8</span>
+  <h1>PDF Düzenleyici</h1><span class="ver">v2.0</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -298,7 +315,7 @@ button.tgl{background:var(--accent)!important;color:var(--accent-ink)!important;
       </div>
       <div class="ctl">
         <label>Alt bilgi yazısı (sol)</label>
-        <input type="text" id="ftText" value="Milli Eğitim Bakanlığı · 1. Yazılı" maxlength="120">
+        <textarea id="ftText" rows="2" maxlength="600">Milli Eğitim Bakanlığı · 1. Yazılı</textarea>
         <small>Boş bırakırsan sadece sayfa numarası olur.</small>
       </div>
       <div class="ctl">
@@ -397,13 +414,15 @@ button.tgl{background:var(--accent)!important;color:var(--accent-ink)!important;
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.8)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.0)</summary><div id="clog"></div></details>
 </main>
-<footer>PDF Düzenleyici v1.8 · 23.11.2026</footer>
+<footer>PDF Düzenleyici v2.0 · 23.11.2026</footer>
 
 <script>
-const APP={name:'PDF Düzenleyici',version:'1.8',date:'23.11.2026'};
+const APP={name:'PDF Düzenleyici',version:'2.0',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'2.0',d:'23.11.2026',items:['Alt bilgi yazısı artık sınırsız uzunlukta: sayfa numarasına çarpmadan otomatik alt satıra geçer, sola hizalı. Enter ile elle satır da açabilirsin. Alt bilgi alanı kendini büyütür, içerik alanı buna göre daralır.']},
+ {v:'1.9',d:'23.11.2026',items:['Menü düğmeleri tekrar küçük ve kompakt (çerçeveli, turuncu temalı). Sadece aç/kapa düğmesindeki simge büyütüldü.']},
  {v:'1.8',d:'23.11.2026',items:['Sonuçtaki araç çubuğu artık açık temada da açık renkli (koyu temada kalmıyordu). Menülerdeki tüm butonlar yuvarlak köşeli çerçeve içinde, turuncu temayla uyumlu. Aç/kapa düğmesi yazısız, büyük ve turuncu; menü yüksekliğini dolduruyor.']},
  {v:'1.7',d:'23.11.2026',items:['Sürüm numaraları artık 1.7, 1.8, 1.9 diye ilerler. Dosya adı pdf-duzenleyici-v….html oldu (uygulama adıyla uyumlu).']},
  {v:'1.6.2',d:'23.11.2026',items:['Uygulama adı "PDF Düzenleyici" oldu. Ana ekranda da bu adla görünür.']},
@@ -679,13 +698,34 @@ function autoParts(){
 function rebuildAuto(){ nextId=1; parts=autoParts(); manualDirty=false; selId=null; }
 
 /* ---------- Alt bilgi ---------- */
-function botMar(){ const mar=val('mar'); return $('#ftOn').checked?Math.max(mar,22+val('ftSize')+12):mar; }
+/* Alt bilgi: uzun yazı sayfa numarasına çarpmadan satırlara bölünür (sola hizalı), Enter ile elle satır da açılır */
+let _fm=null;
+function footLines(){
+  const size=val('ftSize'); const raw=$('#ftText').value.replace(/\r/g,'').trim(); if(!raw) return [];
+  if(!_fm) _fm=document.createElement('canvas').getContext('2d');
+  _fm.font=size+'px Arial, Helvetica, sans-serif';
+  const f=$('#ftNum').value; const nw=f==='none'||!f?0:_fm.measureText('Sayfa 99 / 99').width+14;
+  const maxW=Math.max(60,outW-80-nw); const out=[];
+  raw.split('\n').forEach(par=>{
+    const words=par.trim().split(/\s+/); let line='';
+    words.forEach(w=>{
+      const t=line?line+' '+w:w;
+      if(_fm.measureText(t).width<=maxW||!line){ line=t; }
+      else { out.push(line); line=w; }
+    });
+    out.push(line);
+  });
+  return out;
+}
+function footH(){ const n=Math.max(1,footLines().length); return val('ftSize')*1.25*(n-1); }
+function botMar(){ const mar=val('mar'); return $('#ftOn').checked?Math.max(mar,22+val('ftSize')+12+footH()):mar; }
 function drawFooter(ctx,k,i,N){
   if(!$('#ftOn').checked) return;
   const size=val('ftSize'), X=40, base=outH-22;
   ctx.save(); ctx.fillStyle='#222'; ctx.font=(size*k)+'px Arial, Helvetica, sans-serif'; ctx.textBaseline='alphabetic';
-  if($('#ftLine').checked){ ctx.strokeStyle='#888'; ctx.lineWidth=Math.max(0.5*k,0.6); ctx.beginPath(); ctx.moveTo(X*k,(base-size-3)*k); ctx.lineTo((outW-X)*k,(base-size-3)*k); ctx.stroke(); }
-  const t=$('#ftText').value.trim(); if(t){ ctx.textAlign='left'; ctx.fillText(t,X*k,base*k); }
+  const lines=footLines(), lh=size*1.25, top=base-(Math.max(1,lines.length)-1)*lh;
+  if($('#ftLine').checked){ ctx.strokeStyle='#888'; ctx.lineWidth=Math.max(0.5*k,0.6); ctx.beginPath(); ctx.moveTo(X*k,(top-size-3)*k); ctx.lineTo((outW-X)*k,(top-size-3)*k); ctx.stroke(); }
+  if(lines.length){ ctx.textAlign='left'; lines.forEach((ln,q)=>ctx.fillText(ln,X*k,(top+q*lh)*k)); }
   const f=$('#ftNum').value; const n=f==='sayfa'?'Sayfa '+i+' / '+N:f==='plain'?i+' / '+N:f==='only'?'Sayfa '+i:'';
   if(n){ ctx.textAlign='right'; ctx.fillText(n,(outW-X)*k,base*k); }
   ctx.restore();
