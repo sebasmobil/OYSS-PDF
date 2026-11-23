@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Toparlayıcı">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Yazılı Toparlayıcı v1.5.6</title>
+<title>Yazılı Toparlayıcı v1.5.7</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -158,11 +158,18 @@ details.card>summary{cursor:pointer;font-weight:600}
 #selpanel select{padding:3px 4px;font-size:12px}
 #toast{display:none;position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:80;background:#1f2328;color:#fff;border-radius:10px;padding:8px 10px;gap:10px;align-items:center;box-shadow:0 4px 16px rgba(0,0,0,.5);font-size:14px;max-width:94vw;white-space:nowrap}
 #toast button{background:#fff;color:#111;border:0;padding:7px 11px;border-radius:7px;font-weight:700;font-size:14px}
+input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea{font-size:16px !important}
+html{touch-action:manipulation}
+.ptb .more input[type=number]{width:74px}
+#ptdock{position:sticky;bottom:8px;z-index:45;margin-top:10px}
+#ptdock .ptb{position:static;transform:none;left:auto;width:auto;max-width:none}
+#ptdock .ptb button{padding:5px 9px;min-height:30px;font-size:14px}
+#ptdock .ptb .more{padding:5px 6px 3px;gap:4px 10px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.6</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.7</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -194,6 +201,7 @@ details.card>summary{cursor:pointer;font-weight:600}
     <p class="hint">Yeni PDF böyle görünecek. Bir parçaya dokun: kaldır, yukarı/aşağı taşı, küçült/büyüt (✓ ile ya da boş yere dokunarak bırakırsın). Kaldırdıkların aşağıdaki rafta soluk kalır, dokununca geri gelir.</p>
     <div class="brk hidden" id="brkall"></div>
     <div id="prev"></div>
+    <div id="ptdock" class="hidden"></div>
     <div id="tray" class="hidden"></div>
   </div>
 
@@ -329,13 +337,17 @@ details.card>summary{cursor:pointer;font-weight:600}
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.6)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.7)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.5.6 · 23.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.5.7 · 23.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.5.6',date:'23.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.5.7',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'1.5.7',d:'23.11.2026',items:[
+  'Parça araç çubuğu artık ekranın altına yapışık sabit bir panel: bir parça seçince hep orada durur, altındaki parçaların üstünü kapatmaz. ⋯ bölümü (Ölçek %, Sonraki boşluk, Yeni sayfada başlat, Kopyala, Sınırı düzenle) sürekli açık kalır; ▴ ile kapatırsan tercihin hatırlanır.',
+  'iPhone\'da bir kutuya (Sonraki boşluk, Ölçek %, Alt bilgi yazısı, açılır listeler…) dokununca sayfanın yakınlaşması düzeltildi: tüm giriş alanlarının yazısı 16 px yapıldı. Çift dokunma yakınlaştırması da kapatıldı.'
+ ]},
  {v:'1.5.6',d:'23.11.2026',items:[
   'Düzeltme: ana ekrandan açılınca 404 veriyordu (kısayol sitenin ana klasörünü açmaya çalışıyordu). Artık kısayol doğrudan bu sayfayı açar; index.html gerekmez.'
  ]},
@@ -882,7 +894,7 @@ function paintTray(){
     const t=document.createElement('div'); t.className='tth'; t.title='Geri getir';
     t.appendChild(thumbOf(b,300));
     const sp=document.createElement('span'); sp.textContent='Parça '+(parts.indexOf(b)+1)+' · sayfa '+(b.page+1)+' · geri getir'; t.appendChild(sp);
-    t.onclick=()=>{ selId=b.id; moreOpen=false; edit(()=>{b.off=false;}); };
+    t.onclick=()=>{ selId=b.id; edit(()=>{b.off=false;}); };
     g.appendChild(t);
   });
   box.appendChild(g);
@@ -890,12 +902,9 @@ function paintTray(){
 $('#sortbtn').onclick=()=>edit(()=>{ parts.sort((a,b)=>a.page-b.page||a.top-b.top||a.left-b.left); });
 
 /* ---------- Önizlemede araç çubuğu ---------- */
-let moreOpen=false;
+let moreOpen=true; try{ const _v=localStorage.getItem('yt_more'); if(_v!==null) moreOpen=_v==='1'; }catch(e){}
 function buildToolbar(it){
   const b=it.b; const tb=document.createElement('div'); tb.className='ptb';
-  const bottomFrac=(it.y+it.h)/outH;
-  if(bottomFrac>0.72){ tb.style.bottom=((1-it.y/outH)*100)+'%'; tb.style.marginBottom='6px'; }
-  else { tb.style.top=(bottomFrac*100)+'%'; tb.style.marginTop='6px'; }
   tb.addEventListener('click',e=>e.stopPropagation());
   const order=parts.filter(q=>!q.off); const oi=order.indexOf(b);
   const r1=document.createElement('div'); r1.className='r1'; r1.style.flexWrap='wrap';
@@ -908,7 +917,7 @@ function buildToolbar(it){
   btn('+',()=>edit(()=>{b.scale=clamp(Math.round(b.scale+5),20,300);}),false,'Büyüt');
   const kb=btn('🔗',()=>edit(()=>{b.keepNext=!b.keepNext;}),oi<0||oi>=order.length-1,b.keepNext?'Alttakiyle birlikte tutuluyor (kaldırmak için dokun)':'Alttaki parçayla aynı sayfada tut');
   if(b.keepNext) kb.style.background='rgba(37,99,235,.7)';
-  btn(moreOpen?'▴':'⋯',()=>{moreOpen=!moreOpen;update();},false,'Daha fazla');
+  btn(moreOpen?'▴':'⋯',()=>{moreOpen=!moreOpen;try{localStorage.setItem('yt_more',moreOpen?'1':'0');}catch(e){} update();},false,'Seçenekleri aç/kapat');
   btn('✓',()=>{selId=null;update();},false,'Bitti (seçimi bırak, Esc)');
   tb.appendChild(r1);
   if(moreOpen){
@@ -929,6 +938,12 @@ function buildToolbar(it){
 }
 
 /* ---------- Önizleme (sonuç) ---------- */
+function paintDock(L){
+  const dock=$('#ptdock'); dock.innerHTML='';
+  let it=null; for(const pg of L.pages) for(const x of pg.items) if(x.b.id===selId) it=x;
+  if(!it){ dock.classList.add('hidden'); return; }
+  dock.classList.remove('hidden'); dock.appendChild(buildToolbar(it));
+}
 function drawPreview(L){
   const box=$('#prev'); box.innerHTML='';
   const BR=badBreaks(L);
@@ -949,12 +964,11 @@ function drawPreview(L){
       el.style.left=(it.x/outW*100)+'%'; el.style.top=(it.y/outH*100)+'%';
       el.style.width=(it.w/outW*100)+'%'; el.style.height=(it.h/outH*100)+'%';
       el.title='Parça '+(parts.indexOf(b)+1)+' — dokun: düzenle';
-      el.onclick=ev=>{ ev.stopPropagation(); if(selId===b.id){selId=null;} else {selId=b.id;moreOpen=false;} update(); };
+      el.onclick=ev=>{ ev.stopPropagation(); if(selId===b.id){selId=null;} else {selId=b.id;} update(); };
       ov.appendChild(el);
       if(b.id===selId) selItem=it;
     }
     drawFooter(ctx,k,i+1,L.pages.length);
-    if(selItem) ov.appendChild(buildToolbar(selItem));
     stage.addEventListener('click',()=>{ if(selId!=null){ selId=null; update(); } });
     const lab=document.createElement('span'); lab.className='lab'; lab.textContent='Yeni sayfa '+(i+1)+' · '+pg.items.length+' parça';
     wrap.appendChild(stage); wrap.appendChild(lab);
@@ -990,7 +1004,7 @@ function update(){
       const bt=document.createElement('button'); bt.type='button'; bt.className='sm'; bt.textContent='🔗 Hepsini birlikte tut';
       bt.onclick=()=>edit(()=>{ badBreaks(layout()).forEach(x=>{x.a.keepNext=true;}); }); el.appendChild(bt); }
     else el.classList.add('hidden'); }
-  paintOverlays(); paintSel(); paintTray(); drawPreview(L);
+  paintOverlays(); paintSel(); paintTray(); drawPreview(L); paintDock(L);
   $('#dl').disabled=!kept; $('#undo').disabled=!undoStack.length;
   schedulePersist();
 }
