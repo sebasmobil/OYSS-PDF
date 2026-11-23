@@ -1,4 +1,24 @@
 <!DOCTYPE html>
+<!--
+  PDF Düzenleyici v2.6
+  Copyright (C) 2026 sebasmobil
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+  https://www.gnu.org/licenses/agpl-3.0.html
+
+  SPDX-License-Identifier: AGPL-3.0-or-later
+
+  Third-party libraries (loaded unmodified): pdf.js (Apache-2.0, Mozilla),
+  pdf-lib (MIT, Andrew Dillon).
+-->
 <html lang="tr">
 <head>
 <meta charset="utf-8">
@@ -10,7 +30,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PDF Düzenleyici">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>PDF Düzenleyici v2.4</title>
+<title>PDF Düzenleyici v2.6</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -228,6 +248,9 @@ textarea#ftText{width:100%;box-sizing:border-box;resize:vertical;min-height:64px
 .ptb .more .frbox input[type=color]{width:44px;height:34px;padding:2px;border:1.5px solid var(--cardline);border-radius:8px;background:var(--box)}
 .ptb .more .frbox select{font-size:16px;min-height:34px;border:1.5px solid var(--cardline);border-radius:8px;background:var(--box);color:var(--ink);padding:2px 6px}
 .ptb .more button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.sec{scroll-margin-top:60px}
+#topbar{margin:0 auto;padding:9px 12px;text-align:center;font-size:14px;color:var(--muted);background:var(--panel);border-bottom:1px solid var(--cardline)}
+#topbar a{color:inherit;text-decoration:none}
 /* ===== v1.9: düğmeler tekrar kompakt, sadece aç/kapa simgesi büyük ===== */
 .ptb,#ptdock .ptb{padding:5px;border-radius:12px}
 .ptb .r1{display:flex;flex-wrap:wrap;gap:4px}
@@ -247,8 +270,9 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
 </style>
 </head>
 <body>
+<div id="topbar">©sebasmobil 2026 | <a href="https://www.gnu.org/licenses/agpl-3.0.html" target="_blank" rel="noopener license">AGPL v3.0</a></div>
 <header>
-  <h1>PDF Düzenleyici</h1><span class="ver">v2.4</span>
+  <h1>PDF Düzenleyici</h1><span class="ver">v2.6</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -423,13 +447,15 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.4)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.6)</summary><div id="clog"></div></details>
 </main>
-<footer>PDF Düzenleyici v2.4 · 23.11.2026</footer>
+<footer>PDF Düzenleyici v2.6 · 23.11.2026 · AGPL v3.0</footer>
 
 <script>
-const APP={name:'PDF Düzenleyici',version:'2.4',date:'23.11.2026'};
+const APP={name:'PDF Düzenleyici',version:'2.6',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'2.6',d:'23.11.2026',items:['Üst çubuktan uygulama adı ve sürüm kaldırıldı; yalnızca ©sebasmobil 2026 | AGPL v3.0 kaldı.']},
+ {v:'2.5',d:'23.11.2026',items:['Üstte bilgi çubuğu: uygulama adı, sürüm, ©sebasmobil 2026 ve AGPL v3.0 bağlantısı (altı çizgisiz). Lisans (AGPL-3.0-or-later) dosyanın başında kod yorumu olarak da belirtildi.']},
  {v:'2.4',d:'23.11.2026',items:['"Otomatik uydur" artık ölçeği büyütebilir de: önce %100\'den başlar, hedefe sığan en büyük ölçeği bulur. Önce 2 sayfaya sığdırıp sonra 3 sayfa hedeflersen sorular tekrar büyür.']},
  {v:'2.3',d:'23.11.2026',items:['Yeni ayar: "Sol / sağ sayfa kenar boşluğu" (varsayılan 24 pt). Parçalar ve çerçeveler artık kâğıdın kenarına taşmaz; geniş parçalar otomatik küçülür. Çerçeve çizgisi parça kutusunun tamamen içinde kalır. Alt bilgi de bu kenar boşluğuna uyar.']},
  {v:'2.2',d:'23.11.2026',items:['Parçaya çerçeve eklenebiliyor: parçaya dokun → "▢ Çerçeve". Kalınlık, renk, köşe (yuvarlak/düz) ve çizgi (düz/kesik) ayarlanır; "Hepsine uygula" ile tüm parçalara geçer. Hem önizlemede hem indirilen PDF\'te görünür (vektör, keskin).']},
