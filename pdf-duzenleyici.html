@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PDF Düzenleyici">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>PDF Düzenleyici v2.0</title>
+<title>PDF Düzenleyici v2.2</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -224,6 +224,10 @@ button.tgl{background:var(--accent)!important;color:var(--accent-ink)!important;
 .ptb .r1>.no{text-align:center;align-self:center}
 .ptb .r1 button.tgl{min-width:0;min-height:46px}
 textarea#ftText{width:100%;box-sizing:border-box;resize:vertical;min-height:64px;padding:8px 10px;border:1.5px solid var(--cardline);border-radius:8px;background:var(--box);color:var(--ink);font-family:inherit;line-height:1.35}
+.ptb .more .frbox{flex:1 1 100%;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px;border:1.5px dashed var(--accent);border-radius:10px;background:var(--band)}
+.ptb .more .frbox input[type=color]{width:44px;height:34px;padding:2px;border:1.5px solid var(--cardline);border-radius:8px;background:var(--box)}
+.ptb .more .frbox select{font-size:16px;min-height:34px;border:1.5px solid var(--cardline);border-radius:8px;background:var(--box);color:var(--ink);padding:2px 6px}
+.ptb .more button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 /* ===== v1.9: düğmeler tekrar kompakt, sadece aç/kapa simgesi büyük ===== */
 .ptb,#ptdock .ptb{padding:5px;border-radius:12px}
 .ptb .r1{display:flex;flex-wrap:wrap;gap:4px}
@@ -244,7 +248,7 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
 </head>
 <body>
 <header>
-  <h1>PDF Düzenleyici</h1><span class="ver">v2.0</span>
+  <h1>PDF Düzenleyici</h1><span class="ver">v2.2</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -414,13 +418,15 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.0)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.2)</summary><div id="clog"></div></details>
 </main>
-<footer>PDF Düzenleyici v2.0 · 23.11.2026</footer>
+<footer>PDF Düzenleyici v2.2 · 23.11.2026</footer>
 
 <script>
-const APP={name:'PDF Düzenleyici',version:'2.0',date:'23.11.2026'};
+const APP={name:'PDF Düzenleyici',version:'2.2',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'2.2',d:'23.11.2026',items:['Parçaya çerçeve eklenebiliyor: parçaya dokun → "▢ Çerçeve". Kalınlık, renk, köşe (yuvarlak/düz) ve çizgi (düz/kesik) ayarlanır; "Hepsine uygula" ile tüm parçalara geçer. Hem önizlemede hem indirilen PDF\'te görünür (vektör, keskin).']},
+ {v:'2.1',d:'23.11.2026',items:['"Otomatik uydur" artık genel ölçeği de küçültür: önce boşluğu azaltır, boşluk 0 olunca da sığmıyorsa hedef sayfa sayısına girene kadar genel ölçeği düşürür (en az %40). Sonra sığan en büyük boşluğu geri verir.']},
  {v:'2.0',d:'23.11.2026',items:['Alt bilgi yazısı artık sınırsız uzunlukta: sayfa numarasına çarpmadan otomatik alt satıra geçer, sola hizalı. Enter ile elle satır da açabilirsin. Alt bilgi alanı kendini büyütür, içerik alanı buna göre daralır.']},
  {v:'1.9',d:'23.11.2026',items:['Menü düğmeleri tekrar küçük ve kompakt (çerçeveli, turuncu temalı). Sadece aç/kapa düğmesindeki simge büyütüldü.']},
  {v:'1.8',d:'23.11.2026',items:['Sonuçtaki araç çubuğu artık açık temada da açık renkli (koyu temada kalmıyordu). Menülerdeki tüm butonlar yuvarlak köşeli çerçeve içinde, turuncu temayla uyumlu. Aç/kapa düğmesi yazısız, büyük ve turuncu; menü yüksekliğini dolduruyor.']},
@@ -1010,6 +1016,24 @@ function paintTray(){
 }
 $('#sortbtn').onclick=()=>edit(()=>{ parts.sort((a,b)=>a.page-b.page||a.top-b.top||a.left-b.left); });
 
+/* ---------- Parça çerçevesi ---------- */
+const FRAME_DEF={w:1.5,c:'#222222',r:true,d:false};
+function frPath(w,h,r){
+  r=Math.max(0,Math.min(r,w/2,h/2)); if(!r) return 'M0,0 L'+w+',0 L'+w+','+h+' L0,'+h+' Z';
+  const q=r*0.5523;
+  return 'M'+r+',0 L'+(w-r)+',0 C'+(w-r+q)+',0 '+w+','+(r-q)+' '+w+','+r+' L'+w+','+(h-r)+' C'+w+','+(h-r+q)+' '+(w-r+q)+','+h+' '+(w-r)+','+h+' L'+r+','+h+' C'+(r-q)+','+h+' 0,'+(h-r+q)+' 0,'+(h-r)+' L0,'+r+' C0,'+(r-q)+' '+(r-q)+',0 '+r+',0 Z';
+}
+function frDash(f){ return f.d?[f.w*3+2,f.w*2+2]:[]; }
+function strokeFrame(ctx,f,x,y,w,h,k){
+  ctx.save(); ctx.strokeStyle=f.c; ctx.lineWidth=Math.max(f.w*k,0.6); ctx.setLineDash(frDash(f).map(v=>v*k)); ctx.lineJoin='round';
+  const r=f.r?Math.min(8,w/2,h/2)*k:0, X=x*k, Y=y*k, W=w*k, H=h*k;
+  ctx.beginPath();
+  if(r){ ctx.moveTo(X+r,Y); ctx.arcTo(X+W,Y,X+W,Y+H,r); ctx.arcTo(X+W,Y+H,X,Y+H,r); ctx.arcTo(X,Y+H,X,Y,r); ctx.arcTo(X,Y,X+W,Y,r); ctx.closePath(); }
+  else ctx.rect(X,Y,W,H);
+  ctx.stroke(); ctx.restore();
+}
+function hexRgb(h){ const m=/^#?([0-9a-f]{6})$/i.exec(h||''); const n=m?parseInt(m[1],16):0x222222; return [(n>>16&255)/255,(n>>8&255)/255,(n&255)/255]; }
+
 /* ---------- Önizlemede araç çubuğu ---------- */
 let moreOpen=true; try{ const _v=localStorage.getItem('yt_more'); if(_v!==null) moreOpen=_v==='1'; }catch(e){}
 function buildToolbar(it){
@@ -1038,9 +1062,23 @@ function buildToolbar(it){
     gp.onchange=()=>edit(()=>{b.gapAfter=gp.value===''?null:clamp(+gp.value,0,200);}); lab('Sonraki boşluk pt',gp);
     const br=document.createElement('input'); br.type='checkbox'; br.checked=b.breakBefore;
     br.onchange=()=>edit(()=>{b.breakBefore=br.checked;}); lab('Yeni sayfada başlat',br);
-    const mb=(t,fn)=>{const x=document.createElement('button');x.type='button';x.textContent=t;x.onclick=fn;m.appendChild(x);};
-    mb('Kopyala',()=>edit(()=>{const np=Object.assign({},b,{id:nextId++});parts.splice(parts.indexOf(b)+1,0,np);selId=np.id;}));
+    const mb=(t,fn)=>{const x=document.createElement('button');x.type='button';x.textContent=t;x.onclick=fn;m.appendChild(x);return x;};
+    const fb=mb('▢ Çerçeve'+(b.frame?': açık':''),()=>edit(()=>{b.frame=b.frame?null:Object.assign({},FRAME_DEF);}));
+    if(b.frame) fb.classList.add('on');
+    mb('Kopyala',()=>edit(()=>{const np=Object.assign({},b,{id:nextId++,frame:b.frame?Object.assign({},b.frame):null});parts.splice(parts.indexOf(b)+1,0,np);selId=np.id;}));
     mb('Sınırı düzenle',()=>{$('#adv').open=true;update();requestAnimationFrame(()=>{const e=partEls[b.id];if(e)e.scrollIntoView({block:'center'});});});
+    if(b.frame){
+      const fr=document.createElement('div'); fr.className='frbox';
+      const upd=(k,v)=>edit(()=>{b.frame=Object.assign({},b.frame,{[k]:v});});
+      const fl=(t,el)=>{const l=document.createElement('label');l.append(t+' ');l.appendChild(el);fr.appendChild(l);};
+      const w=document.createElement('input'); w.type='number'; w.min=0.5; w.max=12; w.step=0.5; w.value=b.frame.w; w.onchange=()=>upd('w',clamp(+w.value||1.5,0.5,12)); fl('Kalınlık',w);
+      const col=document.createElement('input'); col.type='color'; col.value=b.frame.c; col.onchange=()=>upd('c',col.value); fl('Renk',col);
+      const rs=document.createElement('select'); [['1','Yuvarlak köşe'],['0','Düz köşe']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;rs.appendChild(o);}); rs.value=b.frame.r?'1':'0'; rs.onchange=()=>upd('r',rs.value==='1'); fr.appendChild(rs);
+      const ds=document.createElement('select'); [['0','Düz çizgi'],['1','Kesik çizgi']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;ds.appendChild(o);}); ds.value=b.frame.d?'1':'0'; ds.onchange=()=>upd('d',ds.value==='1'); fr.appendChild(ds);
+      const all=document.createElement('button'); all.type='button'; all.textContent='Hepsine uygula';
+      all.onclick=()=>edit(()=>{parts.forEach(q=>{q.frame=Object.assign({},b.frame);});},'Çerçeve tüm parçalara uygulandı.'); fr.appendChild(all);
+      m.appendChild(fr);
+    }
     tb.appendChild(m);
   }
   return tb;
@@ -1069,6 +1107,7 @@ function drawPreview(L){
     for(const it of pg.items){
       const b=it.b, p=pages[b.page];
       ctx.drawImage(p.canvas,b.left*S,b.top*S,(b.right-b.left)*S,(b.bottom-b.top)*S, it.x*k,it.y*k,it.w*k,it.h*k);
+      if(b.frame) strokeFrame(ctx,b.frame,it.x,it.y,it.w,it.h,k);
       const el=document.createElement('div'); el.className='pbox'+(b.id===selId?' sel':'')+(b.keepNext?' kn':'');
       el.style.left=(it.x/outW*100)+'%'; el.style.top=(it.y/outH*100)+'%';
       el.style.width=(it.w/outW*100)+'%'; el.style.height=(it.h/outH*100)+'%';
@@ -1143,12 +1182,18 @@ $('#none').onclick=()=>edit(()=>parts.forEach(b=>b.off=true));
 $('#fit').onclick=()=>{
   const t=Math.max(1,+$('#target').value||1);
   const pcount=g=>{const L=layout(g);return L.pages[0].items.length?L.pages.length:0};
+  const sc=$('#scale'), sc0=+sc.value, smin=+sc.min||40;
+  // 1) önce genel ölçeği olduğu gibi bırakıp sadece boşluğu azaltmayı dene
+  // 2) 0 boşlukla da sığmıyorsa genel ölçeği yavaş yavaş küçült
+  let S=sc0; while(S>smin && pcount(0)>t){ S--; sc.value=S; }
   if(pcount(0)>t){
     $('#gap').value=0; update();
-    setMsg('Boşluk 0 yapılsa bile '+pcount(0)+' sayfa gerekiyor. Bazı parçaları kaldır, genel ölçeği küçült ya da kenar boşluğunu azalt.','warn'); return;
+    setMsg('Genel ölçek %'+smin+' ve boşluk 0 olsa bile '+pcount(0)+' sayfa gerekiyor. Bazı parçaları kaldır, tek tek parça ölçeklerini küçült ya da kenar boşluğunu azalt.','warn'); return;
   }
+  // bulunan ölçekte, sığan en büyük boşluğu seç (en çok 60 pt)
   let g=60; while(g>0 && pcount(g)>t) g--;
-  $('#gap').value=g; update(); setMsg(t+' sayfaya sığdırıldı (boşluk '+g+' pt).','ok');
+  $('#gap').value=g; update();
+  setMsg(t+' sayfaya sığdırıldı ('+(S<sc0?'genel ölçek %'+sc0+' → %'+S+', ':'genel ölçek %'+S+', ')+'boşluk '+g+' pt).','ok');
 };
 
 /* ---------- PDF üret ve indir ---------- */
@@ -1210,7 +1255,7 @@ async function renderPart(b,R){
 
 async function buildPdf(info){
   info=info||{};
-  const {PDFDocument,pushGraphicsState,popGraphicsState,rectangle,clip,endPath}=PDFLib;
+  const {PDFDocument,pushGraphicsState,popGraphicsState,rectangle,clip,endPath,rgb}=PDFLib;
   const out=await PDFDocument.create();
   const L=layout();
   const modeSel=$('#mode').value, dpi=+$('#dpi').value, fmt=$('#fmt').value;
@@ -1257,6 +1302,12 @@ async function buildPdf(info){
         page.pushOperators(pushGraphicsState(),rectangle(it.x,yPdf,it.w,it.h),clip(),endPath());
         page.drawPage(emb,{x:x0,y:y0,xScale:it.s,yScale:it.s});
         page.pushOperators(popGraphicsState());
+      }
+      if(b.frame){
+        const f=b.frame, r=f.r?Math.min(8,it.w/2,it.h/2):0, c=hexRgb(f.c);
+        const o={x:it.x,y:outH-it.y,borderColor:rgb(c[0],c[1],c[2]),borderWidth:f.w};
+        if(f.d) o.borderDashArray=frDash(f);
+        page.drawSvgPath(frPath(it.w,it.h,r),o);
       }
     }
     if($('#ftOn').checked){
