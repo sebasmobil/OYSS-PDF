@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PDF Düzenleyici">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>PDF Düzenleyici v1.7</title>
+<title>PDF Düzenleyici v1.8</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -198,11 +198,36 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
 .gbox:first-child{margin-top:2px}
 .gbox>.grp{margin:0;border:0;border-radius:0;border-bottom:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:12px 14px;font-size:16px}
 .gbox>.ctl,.gbox>.hint{margin:0 12px}
+/* ===== v1.8: menüler temaya uyumlu, butonlar çerçeveli ===== */
+.ptb,#ptdock .ptb{background:var(--panel);color:var(--ink);border:2px solid var(--accent);border-radius:14px;padding:8px;box-shadow:0 4px 18px rgba(0,0,0,.28)}
+.ptb .r1{gap:6px}
+.ptb button,#ptdock .ptb button,#selpanel button{background:var(--box);color:var(--ink);border:1.5px solid var(--cardline);border-radius:10px;min-height:42px;padding:6px 12px;font-size:15px;font-weight:600}
+.ptb .r1 button{flex:1 1 auto}
+.ptb button:hover:not(:disabled),#selpanel button:hover:not(:disabled){background:var(--band);border-color:var(--accent)}
+.ptb button:active:not(:disabled),#selpanel button:active:not(:disabled){background:var(--accent);color:var(--accent-ink)}
+.ptb button:disabled{opacity:.35}
+.ptb .no{font-size:15px;font-weight:800;color:var(--ink);padding:0 6px}
+.ptb button.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ptb .more,#ptdock .ptb .more{border-top:2px solid var(--cardline);margin-top:8px;padding:10px 2px 2px;gap:8px 12px;font-size:14px;color:var(--ink)}
+.ptb .more input[type=number]{width:84px;padding:7px 8px;border-radius:8px;border:1.5px solid var(--cardline);background:var(--box);color:var(--ink);font-size:16px}
+.ptb .more button{min-height:40px;font-size:14px;border:1.5px solid var(--cardline)}
+/* büyük aç/kapa düğmesi (yazısız, yüksekliği doldurur) */
+button.tgl{background:var(--accent)!important;color:var(--accent-ink)!important;border-color:var(--accent)!important;font-size:24px!important;line-height:1;min-width:56px;padding:0 14px!important;flex:0 0 auto!important}
+#selpanel{border-radius:14px;padding:10px;box-shadow:0 -4px 18px rgba(0,0,0,.28)}
+#selpanel .row{align-items:stretch}
+#selpanel .ttl{font-size:14px;align-self:center}
+#selpanel .sm,#selpanel .row button{padding:6px 12px;font-size:14px;min-height:40px}
+#selpanel .nud button{min-width:44px;min-height:40px}
+#selpanel select{font-size:16px;min-height:40px;border:1.5px solid var(--cardline);border-radius:10px;background:var(--box);color:var(--ink)}
+.ptb .r1{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ptb .r1>:nth-child(1),.ptb .r1>:nth-child(8),.ptb .r1>:nth-child(9){grid-column:span 2}
+.ptb .r1>.no{text-align:center;align-self:center}
+.ptb .r1 button.tgl{min-width:0;min-height:46px}
 </style>
 </head>
 <body>
 <header>
-  <h1>PDF Düzenleyici</h1><span class="ver">v1.7</span>
+  <h1>PDF Düzenleyici</h1><span class="ver">v1.8</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -372,13 +397,14 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.7)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.8)</summary><div id="clog"></div></details>
 </main>
-<footer>PDF Düzenleyici v1.7 · 23.11.2026</footer>
+<footer>PDF Düzenleyici v1.8 · 23.11.2026</footer>
 
 <script>
-const APP={name:'PDF Düzenleyici',version:'1.7',date:'23.11.2026'};
+const APP={name:'PDF Düzenleyici',version:'1.8',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'1.8',d:'23.11.2026',items:['Sonuçtaki araç çubuğu artık açık temada da açık renkli (koyu temada kalmıyordu). Menülerdeki tüm butonlar yuvarlak köşeli çerçeve içinde, turuncu temayla uyumlu. Aç/kapa düğmesi yazısız, büyük ve turuncu; menü yüksekliğini dolduruyor.']},
  {v:'1.7',d:'23.11.2026',items:['Sürüm numaraları artık 1.7, 1.8, 1.9 diye ilerler. Dosya adı pdf-duzenleyici-v….html oldu (uygulama adıyla uyumlu).']},
  {v:'1.6.2',d:'23.11.2026',items:['Uygulama adı "PDF Düzenleyici" oldu. Ana ekranda da bu adla görünür.']},
  {v:'1.6.1',d:'23.11.2026',items:['Her ayar grubu (Yerleşim, Alt bilgi, Çıktı kalitesi, Otomatik tespit) artık tek bir çerçevenin içinde: renkli başlık çubuğu + altında o gruba ait ayarlar.']},
@@ -881,7 +907,7 @@ function paintSel(){
   ttl.style.margin='0';
   const hdr=document.createElement('div'); hdr.className='row'; hdr.style.cssText='justify-content:space-between;flex-wrap:nowrap;margin-bottom:'+(selCollapsed?'0':'6px');
   hdr.appendChild(ttl);
-  const tg=document.createElement('button'); tg.type='button'; tg.className='sm'; tg.textContent=selCollapsed?'▴ Aç':'▾ Küçült';
+  const tg=document.createElement('button'); tg.type='button'; tg.className='tgl'; tg.textContent=selCollapsed?'▴':'▾'; tg.title=selCollapsed?'Paneli aç':'Paneli küçült';
   tg.onclick=()=>{selCollapsed=!selCollapsed;paintSel();}; hdr.appendChild(tg);
   box.appendChild(hdr);
   if(selCollapsed) return;
@@ -959,8 +985,8 @@ function buildToolbar(it){
   const no=document.createElement('span'); no.className='no'; no.textContent=Math.round(b.scale)+'%'; r1.appendChild(no);
   btn('+',()=>edit(()=>{b.scale=clamp(Math.round(b.scale+5),20,300);}),false,'Büyüt');
   const kb=btn('🔗',()=>edit(()=>{b.keepNext=!b.keepNext;}),oi<0||oi>=order.length-1,b.keepNext?'Alttakiyle birlikte tutuluyor (kaldırmak için dokun)':'Alttaki parçayla aynı sayfada tut');
-  if(b.keepNext) kb.style.background='rgba(37,99,235,.7)';
-  btn(moreOpen?'▴':'⋯',()=>{moreOpen=!moreOpen;try{localStorage.setItem('yt_more',moreOpen?'1':'0');}catch(e){} update();},false,'Seçenekleri aç/kapat');
+  if(b.keepNext) kb.classList.add('on');
+  btn(moreOpen?'▴':'▾',()=>{moreOpen=!moreOpen;try{localStorage.setItem('yt_more',moreOpen?'1':'0');}catch(e){} update();},false,'Seçenekleri aç/kapat').className='tgl';
   btn('✓',()=>{selId=null;update();},false,'Bitti (seçimi bırak, Esc)');
   tb.appendChild(r1);
   if(moreOpen){
