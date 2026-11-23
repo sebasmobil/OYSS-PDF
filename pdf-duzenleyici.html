@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PDF Düzenleyici">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>PDF Düzenleyici v2.2</title>
+<title>PDF Düzenleyici v2.3</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -248,7 +248,7 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
 </head>
 <body>
 <header>
-  <h1>PDF Düzenleyici</h1><span class="ver">v2.2</span>
+  <h1>PDF Düzenleyici</h1><span class="ver">v2.3</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -297,6 +297,11 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
         <label>Üst / alt sayfa kenar boşluğu <em id="v_mar"></em></label>
         <input type="range" id="mar" min="0" max="100" step="1" value="30">
         <small>Yeni sayfaların üstünde ve altında kalacak boşluk.</small>
+      </div>
+      <div class="ctl">
+        <label>Sol / sağ sayfa kenar boşluğu <em id="v_marX"></em></label>
+        <input type="range" id="marX" min="0" max="80" step="1" value="24">
+        <small>Parçalar ve çerçeveler bu boşluğun dışına taşmaz (yazıcı kenarı kesmesin diye ~15–25 pt önerilir). Genişliği aşan parça otomatik küçülür.</small>
       </div>
       <div class="ctl">
         <label>Genel ölçek <em id="v_scale"></em></label>
@@ -418,13 +423,14 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.2)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.3)</summary><div id="clog"></div></details>
 </main>
-<footer>PDF Düzenleyici v2.2 · 23.11.2026</footer>
+<footer>PDF Düzenleyici v2.3 · 23.11.2026</footer>
 
 <script>
-const APP={name:'PDF Düzenleyici',version:'2.2',date:'23.11.2026'};
+const APP={name:'PDF Düzenleyici',version:'2.3',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'2.3',d:'23.11.2026',items:['Yeni ayar: "Sol / sağ sayfa kenar boşluğu" (varsayılan 24 pt). Parçalar ve çerçeveler artık kâğıdın kenarına taşmaz; geniş parçalar otomatik küçülür. Çerçeve çizgisi parça kutusunun tamamen içinde kalır. Alt bilgi de bu kenar boşluğuna uyar.']},
  {v:'2.2',d:'23.11.2026',items:['Parçaya çerçeve eklenebiliyor: parçaya dokun → "▢ Çerçeve". Kalınlık, renk, köşe (yuvarlak/düz) ve çizgi (düz/kesik) ayarlanır; "Hepsine uygula" ile tüm parçalara geçer. Hem önizlemede hem indirilen PDF\'te görünür (vektör, keskin).']},
  {v:'2.1',d:'23.11.2026',items:['"Otomatik uydur" artık genel ölçeği de küçültür: önce boşluğu azaltır, boşluk 0 olunca da sığmıyorsa hedef sayfa sayısına girene kadar genel ölçeği düşürür (en az %40). Sonra sığan en büyük boşluğu geri verir.']},
  {v:'2.0',d:'23.11.2026',items:['Alt bilgi yazısı artık sınırsız uzunlukta: sayfa numarasına çarpmadan otomatik alt satıra geçer, sola hizalı. Enter ile elle satır da açabilirsin. Alt bilgi alanı kendini büyütür, içerik alanı buna göre daralır.']},
@@ -554,8 +560,8 @@ let nextId=1, selId=null, mode='select', manualDirty=false;
 let restoring=false;
 const undoStack=[];
 
-const ids=['split','gap','mar','scale','cutT','cutB','zoom','ftSize'];
-const unit={split:' pt',gap:' pt',mar:' pt',scale:' %',cutT:' pt',cutB:' pt',zoom:' %',ftSize:' pt'};
+const ids=['split','gap','mar','marX','scale','cutT','cutB','zoom','ftSize'];
+const unit={split:' pt',gap:' pt',mar:' pt',marX:' pt',scale:' %',cutT:' pt',cutB:' pt',zoom:' %',ftSize:' pt'};
 const val=id=>+$('#'+id).value;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 function refreshLabels(){ ids.forEach(i=>{const e=$('#v_'+i); if(e) e.textContent=val(i)+unit[i];}); }
@@ -711,7 +717,7 @@ function footLines(){
   if(!_fm) _fm=document.createElement('canvas').getContext('2d');
   _fm.font=size+'px Arial, Helvetica, sans-serif';
   const f=$('#ftNum').value; const nw=f==='none'||!f?0:_fm.measureText('Sayfa 99 / 99').width+14;
-  const maxW=Math.max(60,outW-80-nw); const out=[];
+  const maxW=Math.max(60,outW-2*Math.max(40,val('marX'))-nw); const out=[];
   raw.split('\n').forEach(par=>{
     const words=par.trim().split(/\s+/); let line='';
     words.forEach(w=>{
@@ -727,7 +733,7 @@ function footH(){ const n=Math.max(1,footLines().length); return val('ftSize')*1
 function botMar(){ const mar=val('mar'); return $('#ftOn').checked?Math.max(mar,22+val('ftSize')+12+footH()):mar; }
 function drawFooter(ctx,k,i,N){
   if(!$('#ftOn').checked) return;
-  const size=val('ftSize'), X=40, base=outH-22;
+  const size=val('ftSize'), X=Math.max(40,val('marX')), base=outH-22;
   ctx.save(); ctx.fillStyle='#222'; ctx.font=(size*k)+'px Arial, Helvetica, sans-serif'; ctx.textBaseline='alphabetic';
   const lines=footLines(), lh=size*1.25, top=base-(Math.max(1,lines.length)-1)*lh;
   if($('#ftLine').checked){ ctx.strokeStyle='#888'; ctx.lineWidth=Math.max(0.5*k,0.6); ctx.beginPath(); ctx.moveTo(X*k,(top-size-3)*k); ctx.lineTo((outW-X)*k,(top-size-3)*k); ctx.stroke(); }
@@ -748,7 +754,7 @@ function layout(gapOverride){
     const pg0=pages[b.page];
     let s=(outW/pg0.wPt)*k*(b.scale/100);
     let w=(b.right-b.left)*s, h=(b.bottom-b.top)*s;
-    let f=1; if(w>outW) f=Math.min(f,outW/w); if(h>usable) f=Math.min(f,usable/h);
+    const usW=Math.max(50,outW-2*val('marX')); let f=1; if(w>usW) f=Math.min(f,usW/w); if(h>usable) f=Math.min(f,usable/h);
     if(f<1){ s*=f; w*=f; h*=f; shrunk++; }
     D.push({b,s,w,h});
   }
@@ -1107,7 +1113,7 @@ function drawPreview(L){
     for(const it of pg.items){
       const b=it.b, p=pages[b.page];
       ctx.drawImage(p.canvas,b.left*S,b.top*S,(b.right-b.left)*S,(b.bottom-b.top)*S, it.x*k,it.y*k,it.w*k,it.h*k);
-      if(b.frame) strokeFrame(ctx,b.frame,it.x,it.y,it.w,it.h,k);
+      if(b.frame){const hw=b.frame.w/2; strokeFrame(ctx,b.frame,it.x+hw,it.y+hw,it.w-b.frame.w,it.h-b.frame.w,k);}
       const el=document.createElement('div'); el.className='pbox'+(b.id===selId?' sel':'')+(b.keepNext?' kn':'');
       el.style.left=(it.x/outW*100)+'%'; el.style.top=(it.y/outH*100)+'%';
       el.style.width=(it.w/outW*100)+'%'; el.style.height=(it.h/outH*100)+'%';
@@ -1166,7 +1172,7 @@ async function persistNow(){
 }
 
 /* ---------- Kontroller ---------- */
-['gap','mar','scale'].forEach(i=>$('#'+i).addEventListener('input',()=>{setMsg('');update();}));
+['gap','mar','marX','scale'].forEach(i=>$('#'+i).addEventListener('input',()=>{setMsg('');update();}));
 $('#zoom').addEventListener('input',()=>{refreshLabels();applyZoom();schedulePersist();});
 ['split','cutT','cutB'].forEach(i=>$('#'+i).addEventListener('input',()=>{
   refreshLabels();
@@ -1304,10 +1310,10 @@ async function buildPdf(info){
         page.pushOperators(popGraphicsState());
       }
       if(b.frame){
-        const f=b.frame, r=f.r?Math.min(8,it.w/2,it.h/2):0, c=hexRgb(f.c);
-        const o={x:it.x,y:outH-it.y,borderColor:rgb(c[0],c[1],c[2]),borderWidth:f.w};
+        const f=b.frame, hw=f.w/2, fw=Math.max(2,it.w-f.w), fh=Math.max(2,it.h-f.w), r=f.r?Math.min(8,fw/2,fh/2):0, c=hexRgb(f.c);
+        const o={x:it.x+hw,y:outH-it.y-hw,borderColor:rgb(c[0],c[1],c[2]),borderWidth:f.w};
         if(f.d) o.borderDashArray=frDash(f);
-        page.drawSvgPath(frPath(it.w,it.h,r),o);
+        page.drawSvgPath(frPath(fw,fh,r),o);
       }
     }
     if($('#ftOn').checked){
