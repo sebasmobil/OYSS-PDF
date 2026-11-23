@@ -8,9 +8,9 @@
 <meta name="theme-color" content="#c2410c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Toparlayıcı">
+<meta name="apple-mobile-web-app-title" content="PDF Düzenleyici">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Yazılı Toparlayıcı v1.6.1</title>
+<title>PDF Düzenleyici v1.7</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -202,7 +202,7 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.6.1</span>
+  <h1>PDF Düzenleyici</h1><span class="ver">v1.7</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -372,13 +372,15 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.6.1)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.7)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.6.1 · 23.11.2026</footer>
+<footer>PDF Düzenleyici v1.7 · 23.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.6.1',date:'23.11.2026'};
+const APP={name:'PDF Düzenleyici',version:'1.7',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'1.7',d:'23.11.2026',items:['Sürüm numaraları artık 1.7, 1.8, 1.9 diye ilerler. Dosya adı pdf-duzenleyici-v….html oldu (uygulama adıyla uyumlu).']},
+ {v:'1.6.2',d:'23.11.2026',items:['Uygulama adı "PDF Düzenleyici" oldu. Ana ekranda da bu adla görünür.']},
  {v:'1.6.1',d:'23.11.2026',items:['Her ayar grubu (Yerleşim, Alt bilgi, Çıktı kalitesi, Otomatik tespit) artık tek bir çerçevenin içinde: renkli başlık çubuğu + altında o gruba ait ayarlar.']},
  {v:'1.6.0',d:'23.11.2026',items:['Varsayılan çıktı ayarları: Görüntü, 300 dpi, JPEG %95 (küçük dosya).']},
  {v:'1.5.9',d:'23.11.2026',items:['Hedef sayfa sayısı varsayılanı 2 oldu.']},
@@ -1255,7 +1257,7 @@ document.querySelectorAll('.controls').forEach(function(c){
 (function(){try{
   var png=document.querySelector('link[rel=apple-touch-icon]').href, svg=document.querySelector('link[rel=icon]').href;
   var base=new URL('./',location.href).href, here=location.href.split('#')[0];
-  var m={name:'Yazılı Toparlayıcı',short_name:'Toparlayıcı',lang:'tr',start_url:here,scope:base,display:'standalone',background_color:'#f6f5f1',theme_color:'#c2410c',
+  var m={name:'PDF Düzenleyici',short_name:'PDF Düzenleyici',lang:'tr',start_url:here,scope:base,display:'standalone',background_color:'#f6f5f1',theme_color:'#c2410c',
     icons:[{src:svg,sizes:'any',type:'image/svg+xml'},{src:png,sizes:'180x180',type:'image/png'}]};
   var l=document.createElement('link'); l.rel='manifest';
   l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));
