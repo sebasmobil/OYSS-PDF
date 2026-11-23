@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="PDF Düzenleyici">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>PDF Düzenleyici v2.3</title>
+<title>PDF Düzenleyici v2.4</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -248,7 +248,7 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
 </head>
 <body>
 <header>
-  <h1>PDF Düzenleyici</h1><span class="ver">v2.3</span>
+  <h1>PDF Düzenleyici</h1><span class="ver">v2.4</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -423,13 +423,14 @@ button.tgl,.ptb .r1 button.tgl,#ptdock .ptb button.tgl,#selpanel button.tgl{font
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.3)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v2.4)</summary><div id="clog"></div></details>
 </main>
-<footer>PDF Düzenleyici v2.3 · 23.11.2026</footer>
+<footer>PDF Düzenleyici v2.4 · 23.11.2026</footer>
 
 <script>
-const APP={name:'PDF Düzenleyici',version:'2.3',date:'23.11.2026'};
+const APP={name:'PDF Düzenleyici',version:'2.4',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'2.4',d:'23.11.2026',items:['"Otomatik uydur" artık ölçeği büyütebilir de: önce %100\'den başlar, hedefe sığan en büyük ölçeği bulur. Önce 2 sayfaya sığdırıp sonra 3 sayfa hedeflersen sorular tekrar büyür.']},
  {v:'2.3',d:'23.11.2026',items:['Yeni ayar: "Sol / sağ sayfa kenar boşluğu" (varsayılan 24 pt). Parçalar ve çerçeveler artık kâğıdın kenarına taşmaz; geniş parçalar otomatik küçülür. Çerçeve çizgisi parça kutusunun tamamen içinde kalır. Alt bilgi de bu kenar boşluğuna uyar.']},
  {v:'2.2',d:'23.11.2026',items:['Parçaya çerçeve eklenebiliyor: parçaya dokun → "▢ Çerçeve". Kalınlık, renk, köşe (yuvarlak/düz) ve çizgi (düz/kesik) ayarlanır; "Hepsine uygula" ile tüm parçalara geçer. Hem önizlemede hem indirilen PDF\'te görünür (vektör, keskin).']},
  {v:'2.1',d:'23.11.2026',items:['"Otomatik uydur" artık genel ölçeği de küçültür: önce boşluğu azaltır, boşluk 0 olunca da sığmıyorsa hedef sayfa sayısına girene kadar genel ölçeği düşürür (en az %40). Sonra sığan en büyük boşluğu geri verir.']},
@@ -1189,9 +1190,10 @@ $('#fit').onclick=()=>{
   const t=Math.max(1,+$('#target').value||1);
   const pcount=g=>{const L=layout(g);return L.pages[0].items.length?L.pages.length:0};
   const sc=$('#scale'), sc0=+sc.value, smin=+sc.min||40;
-  // 1) önce genel ölçeği olduğu gibi bırakıp sadece boşluğu azaltmayı dene
+  // 0) ölçek en az %100'den başlar (önceki uydurmada küçülmüşse tekrar büyür)
   // 2) 0 boşlukla da sığmıyorsa genel ölçeği yavaş yavaş küçült
-  let S=sc0; while(S>smin && pcount(0)>t){ S--; sc.value=S; }
+  const smax=+sc.max||100; let S=Math.min(smax,Math.max(100,sc0)); sc.value=S;
+  while(S>smin && pcount(0)>t){ S--; sc.value=S; }
   if(pcount(0)>t){
     $('#gap').value=0; update();
     setMsg('Genel ölçek %'+smin+' ve boşluk 0 olsa bile '+pcount(0)+' sayfa gerekiyor. Bazı parçaları kaldır, tek tek parça ölçeklerini küçült ya da kenar boşluğunu azalt.','warn'); return;
@@ -1199,7 +1201,7 @@ $('#fit').onclick=()=>{
   // bulunan ölçekte, sığan en büyük boşluğu seç (en çok 60 pt)
   let g=60; while(g>0 && pcount(g)>t) g--;
   $('#gap').value=g; update();
-  setMsg(t+' sayfaya sığdırıldı ('+(S<sc0?'genel ölçek %'+sc0+' → %'+S+', ':'genel ölçek %'+S+', ')+'boşluk '+g+' pt).','ok');
+  setMsg(t+' sayfaya sığdırıldı ('+(S!==sc0?'genel ölçek %'+sc0+' → %'+S+', ':'genel ölçek %'+S+', ')+'boşluk '+g+' pt).','ok');
 };
 
 /* ---------- PDF üret ve indir ---------- */
