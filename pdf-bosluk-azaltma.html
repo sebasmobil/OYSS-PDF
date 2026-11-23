@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Toparlayıcı">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Yazılı Toparlayıcı v1.6.0</title>
+<title>Yazılı Toparlayıcı v1.6.1</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -193,11 +193,16 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
 .pv:last-child{border-bottom:0}
 .newpg .lab{font-weight:700}
 #changelog .rel{padding:6px 10px;border-left:5px solid var(--accent);background:var(--band);border-radius:6px}
+/* ===== v1.6.1: her grup tek çerçeve ===== */
+.gbox{grid-column:1/-1;display:flex;flex-direction:column;gap:10px;margin-top:16px;border:2px solid var(--accent);border-radius:16px;overflow:hidden;background:var(--band);padding:0 0 12px;box-shadow:0 3px 12px rgba(0,0,0,.12)}
+.gbox:first-child{margin-top:2px}
+.gbox>.grp{margin:0;border:0;border-radius:0;border-bottom:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:12px 14px;font-size:16px}
+.gbox>.ctl,.gbox>.hint{margin:0 12px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.6.0</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.6.1</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -367,13 +372,14 @@ details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-botto
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.6.0)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.6.1)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.6.0 · 23.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.6.1 · 23.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.6.0',date:'23.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.6.1',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'1.6.1',d:'23.11.2026',items:['Her ayar grubu (Yerleşim, Alt bilgi, Çıktı kalitesi, Otomatik tespit) artık tek bir çerçevenin içinde: renkli başlık çubuğu + altında o gruba ait ayarlar.']},
  {v:'1.6.0',d:'23.11.2026',items:['Varsayılan çıktı ayarları: Görüntü, 300 dpi, JPEG %95 (küçük dosya).']},
  {v:'1.5.9',d:'23.11.2026',items:['Hedef sayfa sayısı varsayılanı 2 oldu.']},
  {v:'1.5.8',d:'23.11.2026',items:[
@@ -1235,6 +1241,15 @@ function showCrashNote(busy){
 }
 init();
 window.__app={get parts(){return parts},get pages(){return pages},layout,buildPdf,loadFile,libsReady,APP,undo,edit,setMode,get selId(){return selId},set selId(v){selId=v}};
+</script>
+<script>
+document.querySelectorAll('.controls').forEach(function(c){
+  var box=null;
+  Array.prototype.slice.call(c.children).forEach(function(el){
+    if(el.classList.contains('grp')){box=document.createElement('div');box.className='gbox';c.insertBefore(box,el);box.appendChild(el);}
+    else if(box){box.appendChild(el);}
+  });
+});
 </script>
 <script>
 (function(){try{
