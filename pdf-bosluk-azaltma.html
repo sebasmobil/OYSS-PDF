@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Toparlayıcı">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Yazılı Toparlayıcı v1.5.7</title>
+<title>Yazılı Toparlayıcı v1.5.9</title>
 <style>
 :root{
   --bg:#f6f5f1; --panel:#ffffff; --ink:#1f2328; --muted:#6b7280; --line:#e2e0d8;
@@ -165,11 +165,39 @@ html{touch-action:manipulation}
 #ptdock .ptb{position:static;transform:none;left:auto;width:auto;max-width:none}
 #ptdock .ptb button{padding:5px 9px;min-height:30px;font-size:14px}
 #ptdock .ptb .more{padding:5px 6px 3px;gap:4px 10px}
+/* ===== v1.5.8: bölümleri belirgin ayır ===== */
+:root{--box:#fbfaf6;--band:color-mix(in srgb,var(--accent) 15%,var(--panel));--cardline:#d6d3c8}
+@media (prefers-color-scheme: dark){:root{--box:#17181b;--cardline:#3d4148}}
+main{gap:20px}
+.card{border:1px solid var(--cardline);border-top:5px solid var(--accent);border-radius:14px;padding:16px;box-shadow:0 2px 10px rgba(0,0,0,.10)}
+/* kart başlıkları */
+.card>h2,.rhead h2{font-size:18px;font-weight:800;letter-spacing:-.01em;margin:0 0 10px}
+details.card>summary{list-style:none;display:flex;align-items:center;gap:10px;font-size:17px;font-weight:800;line-height:1.3;padding:2px 0;cursor:pointer}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary::before{content:'▸';flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-size:14px}
+details.card[open]>summary::before{content:'▾'}
+details.card[open]>summary{border-bottom:2px solid var(--cardline);padding-bottom:12px;margin-bottom:6px}
+/* ayar grupları: renkli bant başlık + her ayar kendi kutusunda */
+.controls{gap:10px 12px;margin-top:10px}
+.grp{grid-column:1/-1;margin:16px 0 0;padding:9px 12px;border:0;border-left:6px solid var(--accent);border-radius:8px;background:var(--band);color:var(--ink);font-size:15px;font-weight:800;letter-spacing:0;text-transform:none}
+.grp:first-child{margin-top:2px}
+.ctl{background:var(--box);border:1px solid var(--cardline);border-radius:10px;padding:12px}
+.ctl>button:only-child{width:100%}
+.hint{background:var(--box);border:1px solid var(--cardline);border-radius:10px;padding:9px 11px}
+#tray{margin-top:22px;padding:12px;background:var(--box);border:1px solid var(--cardline);border-left:6px solid var(--accent);border-radius:10px}
+.advin{gap:18px}
+.advin .tools{border:1px solid var(--cardline);border-radius:10px}
+.sec{margin:6px 0 10px;padding:9px 12px;border-left:6px solid var(--accent);border-radius:8px;background:var(--band);font-size:15px;font-weight:800}
+.pvh b{font-size:15px}
+.pv{padding-bottom:6px;border-bottom:2px dashed var(--cardline)}
+.pv:last-child{border-bottom:0}
+.newpg .lab{font-weight:700}
+#changelog .rel{padding:6px 10px;border-left:5px solid var(--accent);background:var(--band);border-radius:6px}
 </style>
 </head>
 <body>
 <header>
-  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.7</span>
+  <h1>Yazılı Toparlayıcı</h1><span class="ver">v1.5.9</span>
   <p>Yazılı kâğıdını yükle → sonuçta gereksiz parçalara dokunup kaldır → PDF'i indir. Her şey tarayıcında çalışır, internet gerekmez, dosyan hiçbir yere gönderilmez. Çalışman otomatik kaydedilir.</p>
 </header>
 
@@ -227,7 +255,7 @@ html{touch-action:manipulation}
       <div class="ctl">
         <label>Hedef sayfa sayısı</label>
         <div class="row" style="flex-wrap:nowrap">
-          <input type="number" id="target" min="1" value="3" style="width:80px">
+          <input type="number" id="target" min="1" value="2" style="width:80px">
           <button id="fit" type="button">Otomatik uydur</button>
         </div>
         <small>Boşluğu gerektiği kadar küçültüp bu sayfa sayısına sığdırmayı dener.</small>
@@ -319,6 +347,7 @@ html{touch-action:manipulation}
       
       </div>
       <div>
+        <div class="sec">Parça sınırlarını düzenle</div>
         <div class="tools">
           <button id="modeSel" type="button" class="on">☝ Seç / düzenle</button>
           <button id="modeDraw" type="button">✏ Yeni parça çiz</button>
@@ -331,19 +360,24 @@ html{touch-action:manipulation}
           <span><i style="background:rgba(234,88,12,.25)"></i>Küçülecek boşluk</span>
           <span><i style="background:rgba(220,38,38,.5)"></i>Çıkarıldı (PDF'e girmez; "Geri getir" ile döner)</span>
         </div>
+        <div class="sec">Orijinal sayfalar</div>
         <div class="scroll"><div id="orig"></div></div>
         <div id="selpanel" class="hidden"></div>
       </div>
     </div>
   </details>
 
-  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.7)</summary><div id="clog"></div></details>
+  <details class="card" id="changelog"><summary>Sürüm notları (şu an: v1.5.9)</summary><div id="clog"></div></details>
 </main>
-<footer>Yazılı Toparlayıcı v1.5.7 · 23.11.2026</footer>
+<footer>Yazılı Toparlayıcı v1.5.9 · 23.11.2026</footer>
 
 <script>
-const APP={name:'Yazılı Toparlayıcı',version:'1.5.7',date:'23.11.2026'};
+const APP={name:'Yazılı Toparlayıcı',version:'1.5.9',date:'23.11.2026'};
 const CHANGELOG=[
+ {v:'1.5.9',d:'23.11.2026',items:['Hedef sayfa sayısı varsayılanı 2 oldu.']},
+ {v:'1.5.8',d:'23.11.2026',items:[
+  'Görünüm: bölümler artık belirgin. Her kartın üstünde renkli şerit, kart başlıkları büyük ve katlanır başlıklarda renkli ok düğmesi var. Ayar grupları (Yerleşim, Alt bilgi, Çıktı kalitesi, Otomatik tespit) renkli bant başlıkla ayrılıyor ve her ayar kendi kutusunda duruyor. Gelişmiş bölümünde "Parça sınırlarını düzenle" ve "Orijinal sayfalar" alt başlıkları eklendi.'
+ ]},
  {v:'1.5.7',d:'23.11.2026',items:[
   'Parça araç çubuğu artık ekranın altına yapışık sabit bir panel: bir parça seçince hep orada durur, altındaki parçaların üstünü kapatmaz. ⋯ bölümü (Ölçek %, Sonraki boşluk, Yeni sayfada başlat, Kopyala, Sınırı düzenle) sürekli açık kalır; ▴ ile kapatırsan tercihin hatırlanır.',
   'iPhone\'da bir kutuya (Sonraki boşluk, Ölçek %, Alt bilgi yazısı, açılır listeler…) dokununca sayfanın yakınlaşması düzeltildi: tüm giriş alanlarının yazısı 16 px yapıldı. Çift dokunma yakınlaştırması da kapatıldı.'
